@@ -9,7 +9,7 @@ const rl = readline.createInterface({
     output: process.stdout,
   });
 
-const writeStream = fs.createWriteStream('filePath', { flags: 'a' });
+const writeStream = fs.createWriteStream(filePath, { flags: 'a' });
 
 console.log('Enter the text to write to the file. To exit, type "exit" or press Ctrl+C.');
 
@@ -28,7 +28,7 @@ const handleInput = (input) => {
 rl.on('line', handleInput);
 
 rl.on('SIGINT', () => {
-  console.log('До свидания! Процесс завершен.');
+  console.log('Goodluck! The process is complete.');
   writeStream.end();
   rl.close();
   process.exit(0);
