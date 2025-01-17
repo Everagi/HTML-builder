@@ -24,3 +24,12 @@ const handleInput = (input) => {
       console.log('The text is recorded. Enter more text or "exit" to exit.');
   }
 };
+
+rl.on('line', handleInput);
+
+rl.on('SIGINT', () => {
+  console.log('До свидания! Процесс завершен.');
+  writeStream.end();
+  rl.close();
+  process.exit(0);
+});
