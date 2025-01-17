@@ -15,7 +15,7 @@ console.log('Enter the text to write to the file. To exit, type "exit" or press 
 
 const handleInput = (input) => {
   if (input.toLowerCase() === 'exit') {
-      console.log('Goodluck!Have a nice day!');
+      console.log('Goodluck! Have a nice day!');
       writeStream.end();
       rl.close();
       process.exit(0);
