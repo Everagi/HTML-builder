@@ -13,7 +13,6 @@ async function displayFilesInfo() {
         const fileName = path.parse(file.name).name;
         const fileExt = path.extname(file.name).slice(1);
         const fileSize = stats.size;
-        const fileSizeKB = fileSize / 1024;
         console.log(`${fileName} - ${fileExt} - ${fileSize}`);
       }
     }
