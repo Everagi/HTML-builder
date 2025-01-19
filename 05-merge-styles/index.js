@@ -1,18 +1,18 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const stylesDir = path.join(__dirname, 'styles');
-const distDir = path.join(__dirname, 'project-dist');
-const outputFile = path.join(distDir, 'bundle.css');
+const stylesDir = path.join(__dirname, 'styles'); 
+const distDir = path.join(__dirname, 'project-dist'); 
+const outputFile = path.join(distDir, 'bundle.css'); 
 
 async function readStylesDir() {
   try {
     const files = await fs.readdir(stylesDir, { withFileTypes: true });
     return files;
   } catch (error) {
-    console.error('Error reading folder styles:', error);
-    throw error;
-  }
+      console.error('Error reading folder styles:', error);
+      throw error;
+  }   
 }
 
 function isCssFile(file) {
@@ -48,18 +48,14 @@ async function buildBundle() {
     const files = await readStylesDir();
     const cssFiles = files.filter((file) => isCssFile(file));
     const styles = await Promise.all(
-      cssFiles.map((file) => readCssFile(path.join(stylesDir, file.name))),
+      cssFiles.map(file => readCssFile(path.join(stylesDir, file.name)))
     );
-    const bundleContent = mergeStyles(styles);
+    const bundleContent = await mergeStyles(styles);
     await writeBundle(bundleContent);
+
   } catch (error) {
     console.error('Error creating bundle.css: ', error);
   }
 }
 
-async function testBuildBundle() {
-  const arr = await buildBundle();
-  console.log(arr);
-}
-
-testBuildBundle();
+buildBundle();
