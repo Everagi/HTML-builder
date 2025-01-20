@@ -47,15 +47,25 @@ async function replaceTemplateTags(templateContent) {
       console.error(`Error reading component file ${tagName}:`, error);
     }
   }
-
   return result;
 }
 
+async function writeHtmlFile(content) {
+  try {
+    await fs.writeFile(outputHtmlFile, content, 'utf-8');
+    console.log('File index.html created successfully!');
+  } catch (error) {
+    console.error('Error writing index.html file:', error);
+  }
+}
 
-async function test() {
+
+async function test() {;
+  await createProjectDistDir()
   const test = await readTemplate();
   const testTemplate = await replaceTemplateTags(test)
-  console.log(testTemplate);
+  await writeHtmlFile(testTemplate);
+  //console.log(testTemplate);
 }
 
 test();
