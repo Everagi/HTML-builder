@@ -31,9 +31,31 @@ async function readTemplate() {
   }
 }
 
+async function replaceTemplateTags(templateContent) {
+  const tagRegex = /\{\{([^{}]+)\}\}/g;
+  let result = templateContent;
+
+  const matches = [...templateContent.matchAll(tagRegex)];
+  for (const match of matches) {
+    const tagName = match[1].trim();
+    const componentFilePath = path.join(componentsDir, `${tagName}.html`);
+
+    try {
+      const componentContent = await fs.readFile(componentFilePath, 'utf-8');
+      result = result.replace(match[0], componentContent);
+    } catch (error) {
+      console.error(`Error reading component file ${tagName}:`, error);
+    }
+  }
+
+  return result;
+}
+
+
 async function test() {
   const test = await readTemplate();
-  console.log(test);
+  const testTemplate = await replaceTemplateTags(test)
+  console.log(testTemplate);
 }
 
 test();
