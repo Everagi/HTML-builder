@@ -59,12 +59,29 @@ async function writeHtmlFile(content) {
   }
 }
 
+async function compileStyles() {
+  try {
+    const files = await fs.readdir(stylesDir, { withFileTypes: true });
+    const cssFiles = files.filter(file => file.isFile() && path.extname(file.name) === '.css');
+    const styles = await Promise.all(
+      cssFiles.map(file => fs.readFile(path.join(stylesDir, file.name), 'utf-8'))
+    );
+    const bundleContent = styles.join('\n');
+    await fs.writeFile(outputCssFile, bundleContent, 'utf-8');
+    console.log('File style.css created successfully!');
+  } catch (error) {
+    console.error('Error compiling styles:', error);
+  }
+}
+
 
 async function test() {;
   await createProjectDistDir()
   const test = await readTemplate();
   const testTemplate = await replaceTemplateTags(test)
   await writeHtmlFile(testTemplate);
+  await compileStyles();
+  //await 
   //console.log(testTemplate);
 }
 
