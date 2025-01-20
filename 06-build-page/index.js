@@ -1,7 +1,6 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-// Пути
 const projectDistDir = path.join(__dirname, 'project-dist');
 const templateFilePath = path.join(__dirname, 'template.html');
 const componentsDir = path.join(__dirname, 'components');
@@ -74,15 +73,50 @@ async function compileStyles() {
   }
 }
 
+async function copyAssets() {
+  try {
+    await fs.mkdir(outputAssetsDir, { recursive: true });
+    const assets = await fs.readdir(assetsDir, { withFileTypes: true });
 
-async function test() {;
-  await createProjectDistDir()
-  const test = await readTemplate();
-  const testTemplate = await replaceTemplateTags(test)
-  await writeHtmlFile(testTemplate);
-  await compileStyles();
-  //await 
-  //console.log(testTemplate);
+    for (const asset of assets) {
+      const sourcePath = path.join(assetsDir, asset.name);
+      const targetPath = path.join(outputAssetsDir, asset.name);
+
+      if (asset.isFile()) {
+        await fs.copyFile(sourcePath, targetPath);
+      } else if (asset.isDirectory()) {
+        await copyAssetsRecursive(sourcePath, targetPath);
+      }
+    }
+    console.log('Assets copied successfully!');
+  } catch (error) {
+    console.error('Error copying assets:', error);
+  }
 }
 
-test();
+async function copyAssetsRecursive(source, target) {
+  await fs.mkdir(target, { recursive: true });
+  const items = await fs.readdir(source, { withFileTypes: true });
+
+  for (const item of items) {
+    const sourcePath = path.join(source, item.name);
+    const targetPath = path.join(target, item.name);
+
+    if (item.isFile()) {
+      await fs.copyFile(sourcePath, targetPath);
+    } else if (item.isDirectory()) {
+      await copyAssetsRecursive(sourcePath, targetPath);
+    }
+  }
+}
+
+async function buildProject() {
+  await createProjectDistDir();
+  const templateContent = await readTemplate();
+  const htmlContent = await replaceTemplateTags(templateContent);
+  await writeHtmlFile(htmlContent);
+  await compileStyles();
+  await copyAssets();
+}
+
+buildProject();
