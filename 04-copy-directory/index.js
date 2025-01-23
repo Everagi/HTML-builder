@@ -32,7 +32,6 @@ async function copyDir() {
       if (!sourceFileNames.includes(fileName)) {
         const targetFilePath = path.join(targetDir, fileName);
         await fs.rm(targetFilePath);
-        console.log(`File removed: ${fileName}`);
       }
     }
 
